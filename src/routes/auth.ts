@@ -73,7 +73,7 @@ router.get('/user', (req, res) => {
         const { name, picture } = user;
         res.status(200).json({ name, picture });
     } catch (error) {
-        res.status(401).json({ message: error });
+        res.status(401).json({ message: String(error) });
     }
 });
 
