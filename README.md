@@ -1,0 +1,1 @@
+The Typescript + Node.js (Node.ts?) backend for my sample resume application, "Journaly".
