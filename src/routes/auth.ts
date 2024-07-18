@@ -1,33 +1,19 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import dotenv from 'dotenv';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { User } from '../models'; // Import your User model from Sequelize setup
+import jwt from 'jsonwebtoken';
+import { User } from '../models';
+import authHeaderToken from '../middlewares/authHeaderToken';
 
 dotenv.config();
 
 const router = Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID!);
 
-interface UserPayload extends JwtPayload {
-    id: string;
-    email: string;
-    name: string;
-    picture: string;
+// Define a type for the request with user info
+interface AuthenticatedRequest extends Request {
+    user?: any;
 }
-
-const verifyToken = (token: string): UserPayload => {
-    if (!token) {
-        throw new Error('Auth token is missing');
-    }
-
-    try {
-        const user = jwt.verify(token, process.env.JWT_SECRET!) as UserPayload;
-        return user;
-    } catch (error) {
-        throw new Error('Invalid auth token');
-    }
-};
 
 router.post('/google', async (req, res) => {
     const { token } = req.body;
@@ -74,17 +60,12 @@ router.post('/google', async (req, res) => {
     }
 });
 
-router.get('/user', async (req, res) => {
+router.get('/user', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
     // Returns user profile from DB rather than data encoded in token
     // so it is up-to-date
-    const token = req.header('Authorization')?.split(' ')[1];
-
     try {
-        // Verify and decode the JWT token
-        const decodedToken = verifyToken(token!);
-
         // Find the user in the database using the decoded token
-        const user = await User.findOne({ where: { id: decodedToken.id } });
+        const user = await User.findOne({ where: { id: req.user!.id } });
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
