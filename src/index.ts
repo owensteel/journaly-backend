@@ -6,11 +6,20 @@ import authRoutes from './routes/auth';
 
 const app = express();
 
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:5000'];
+
 app.use(bodyParser.json());
 app.use(
     cors({
-        origin: process.env.FRONTEND_ORIGIN!, // Allow requests from this origin
-        credentials: true, // Allow cookies to be sent
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(origin) === -1) {
+                const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+                return callback(new Error(msg), false);
+            }
+            return callback(null, true);
+        },
+        credentials: true,
     })
 );
 app.use(

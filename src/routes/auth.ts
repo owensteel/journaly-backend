@@ -28,13 +28,6 @@ const verifyToken = (token: string): UserPayload => {
     }
 };
 
-router.options('/google', (req, res) => {
-    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN); // Allow from this origin
-    res.header('Access-Control-Allow-Methods', 'POST');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.sendStatus(200);
-});
-
 router.post('/google', async (req, res) => {
     const { token } = req.body;
 
@@ -58,7 +51,6 @@ router.post('/google', async (req, res) => {
 
         const authToken = jwt.sign(user, process.env.JWT_SECRET!, { expiresIn: '1h' });
 
-        res.header('Access-Control-Allow-Origin', process.env.FRONTEND_ORIGIN); // Allow from this origin
         res.status(200).json({ authToken, user });
     } catch (error) {
         res.status(400).send('Error verifying Google token');
