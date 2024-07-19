@@ -24,7 +24,7 @@ router.get('/:goalId', authHeaderToken, async (req: AuthenticatedRequest, res: R
         });
         res.json({
             goal: journalGoal,
-            entries: journalEntries.map(entry => entry.text)
+            entries: journalEntries
         });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch journal' });
