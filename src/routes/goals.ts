@@ -23,13 +23,14 @@ router.get('/', authHeaderToken, async (req: AuthenticatedRequest, res: Response
 });
 
 router.post('/create', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
-    const { title, description } = req.body;
+    const { title, description, endDate } = req.body;
 
     try {
         const goal = await Goal.create({
             title,
             description,
             user_id: req.user!.id, // Associate goal with the logged-in user
+            end_date: endDate
         });
         res.status(201).json(goal);
     } catch (error) {

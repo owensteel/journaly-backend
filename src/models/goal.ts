@@ -7,6 +7,7 @@ class Goal extends Model {
     public title!: string;
     public description!: string;
     public user_id!: number;
+    public end_date!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -30,13 +31,17 @@ Goal.init(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        end_date: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     },
     {
         sequelize,
         modelName: 'goal',
         tableName: 'goals', // Ensure this matches your actual table name
         timestamps: true, // Sequelize will manage createdAt and updatedAt
-        createdAt: 'created_at', // Optional: Customize the column names
+        createdAt: 'created_at',
         updatedAt: 'updated_at',
     }
 );
