@@ -1,13 +1,9 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { Goal } from '../models/goal';
 import authHeaderToken from '../middlewares/authHeaderToken'
+import AuthenticatedRequest from "../middlewares/authenticatedRequest"
 
 const router = Router();
-
-// Define a type for the request with user info
-interface AuthenticatedRequest extends Request {
-    user?: any;
-}
 
 router.get('/', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
     try {

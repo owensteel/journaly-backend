@@ -1,19 +1,15 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { OAuth2Client } from 'google-auth-library';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { User } from '../models';
 import authHeaderToken from '../middlewares/authHeaderToken';
+import AuthenticatedRequest from "../middlewares/authenticatedRequest"
 
 dotenv.config();
 
 const router = Router();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID!);
-
-// Define a type for the request with user info
-interface AuthenticatedRequest extends Request {
-    user?: any;
-}
 
 router.post('/google', async (req, res) => {
     const { token } = req.body;

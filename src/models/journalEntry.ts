@@ -1,49 +1,44 @@
-// src/models/goal.ts
+// src/models/journalEntry.ts
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../db';
 
-class Goal extends Model {
+class JournalEntry extends Model {
     public id!: number;
-    public title!: string;
-    public description!: string;
+    public text!: string;
     public user_id!: number;
-    public end_date!: string;
+    public goal_id!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-Goal.init(
+JournalEntry.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        title: {
+        text: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: true,
         },
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        end_date: {
-            type: DataTypes.STRING,
+        goal_id: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
     },
     {
         sequelize,
-        modelName: 'goal',
-        tableName: 'goals',
+        modelName: 'journal_entry',
+        tableName: 'journal_entries',
         timestamps: true, // Sequelize will manage createdAt and updatedAt
         createdAt: 'created_at',
         updatedAt: 'updated_at',
     }
 );
 
-export { Goal };
+export { JournalEntry };

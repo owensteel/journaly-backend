@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/auth';
 import goalsRoutes from './routes/goals'
+import journalRoutes from './routes/journal'
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(
 
 app.use('/auth', authRoutes);
 app.use('/api/goals', goalsRoutes);
+app.use('/api/journal', journalRoutes);
 
 const PORT = 3001;
 app.listen(PORT, () => {
