@@ -22,7 +22,7 @@ router.get('/', authHeaderToken, async (req: AuthenticatedRequest, res: Response
     }
 });
 
-router.post('/', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
+router.post('/create', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
     const { title, description } = req.body;
 
     try {
@@ -34,6 +34,22 @@ router.post('/', authHeaderToken, async (req: AuthenticatedRequest, res: Respons
         res.status(201).json(goal);
     } catch (error) {
         res.status(500).json({ error: 'Failed to create goal' });
+    }
+});
+
+router.post('/delete', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
+    const { goalId } = req.body;
+
+    try {
+        const goal = await Goal.destroy({
+            where: {
+                id: goalId,
+                user_id: req.user!.id,
+            },
+        });
+        res.status(201).json(goal);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete goal' });
     }
 });
 
