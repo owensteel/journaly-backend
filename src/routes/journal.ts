@@ -51,19 +51,30 @@ router.put('/edit_entry/:entryId', authHeaderToken, async (req: AuthenticatedReq
     const { text, goalId } = req.body;
 
     try {
-        const journalEntry = await JournalEntry.update(
-            {
-                text
-            },
-            {
+        if (text.length < 1) {
+            const result = await JournalEntry.destroy({
                 where: {
                     id: entryId,
                     user_id: req.user!.id,
                     goal_id: goalId
                 },
-            }
-        );
-        res.status(201).json(journalEntry);
+            })
+            res.status(201).json(result);
+        } else {
+            const journalEntry = await JournalEntry.update(
+                {
+                    text
+                },
+                {
+                    where: {
+                        id: entryId,
+                        user_id: req.user!.id,
+                        goal_id: goalId
+                    },
+                }
+            );
+            res.status(201).json(journalEntry);
+        }
     } catch (error) {
         res.status(500).json({ error: 'Failed to create journal entry' });
     }
