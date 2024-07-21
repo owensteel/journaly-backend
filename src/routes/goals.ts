@@ -18,6 +18,21 @@ router.get('/', authHeaderToken, async (req: AuthenticatedRequest, res: Response
     }
 });
 
+router.get('/:goalId', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
+    const goalId = req.params.goalId;
+    try {
+        const goals = await Goal.findAll({
+            where: {
+                id: goalId,
+                user_id: req.user!.id,
+            },
+        });
+        res.json(goals);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch goal' });
+    }
+});
+
 router.post('/create', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
     const { title, description, endDate } = req.body;
 
