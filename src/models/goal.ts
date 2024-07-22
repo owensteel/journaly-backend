@@ -8,6 +8,7 @@ class Goal extends Model {
     public description!: string;
     public user_id!: number;
     public end_date!: string;
+    public completed!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -35,6 +36,10 @@ Goal.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        completed: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        }
     },
     {
         sequelize,

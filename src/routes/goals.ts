@@ -65,4 +65,33 @@ router.post('/delete', authHeaderToken, async (req: AuthenticatedRequest, res: R
     }
 });
 
+router.post('/toggle_completed', authHeaderToken, async (req: AuthenticatedRequest, res: Response) => {
+    const { goalId } = req.body;
+
+    try {
+        const goal = await Goal.findOne({
+            where: {
+                id: goalId,
+                user_id: req.user!.id,
+            },
+        })
+        if (!goal) {
+            throw new Error("Goal not found")
+        }
+        await Goal.update(
+            {
+                completed: !goal.completed
+            },
+            {
+                where: {
+                    id: goalId,
+                    user_id: req.user!.id,
+                },
+            });
+        res.status(201).json(goal);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to toggle goal completed' });
+    }
+});
+
 export default router;
