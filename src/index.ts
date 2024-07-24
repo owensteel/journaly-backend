@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import authRoutes from './routes/auth';
 import goalsRoutes from './routes/goals'
 import journalRoutes from './routes/journal'
+import notificationsRoutes from './routes/notifications'
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(
 );
 
 app.use('/auth', authRoutes);
+app.use('/notifications', notificationsRoutes);
 app.use('/api/goals', goalsRoutes);
 app.use('/api/journal', journalRoutes);
 
