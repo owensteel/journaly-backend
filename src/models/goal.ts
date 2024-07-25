@@ -9,6 +9,7 @@ class Goal extends Model {
     public user_id!: number;
     public end_date!: string;
     public completed!: boolean;
+    public last_notified_at!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -39,6 +40,10 @@ Goal.init(
         completed: {
             type: DataTypes.BOOLEAN,
             allowNull: false
+        },
+        last_notified_at: {
+            type: DataTypes.STRING,
+            allowNull: false,
         }
     },
     {

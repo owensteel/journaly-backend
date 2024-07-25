@@ -6,6 +6,7 @@ import authRoutes from './routes/auth';
 import goalsRoutes from './routes/goals'
 import journalRoutes from './routes/journal'
 import notificationsRoutes from './routes/notifications'
+import * as Notifications from './notifications'
 
 const app = express();
 
@@ -33,3 +34,5 @@ const PORT = 3001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+Notifications.initScheduler()

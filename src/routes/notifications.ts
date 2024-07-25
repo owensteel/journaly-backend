@@ -1,6 +1,9 @@
 // Notifications routes
 
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
+import authHeaderToken from '../middlewares/authHeaderToken'
+import AuthenticatedRequest from "../middlewares/authenticatedRequest"
+import { Subscription } from '../models/subscription';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -19,26 +22,35 @@ webPush.setVapidDetails(
     vapidKeys.privateKey
 );
 
-let subscriptions: PushSubscription[] = [];
+router.post(
+    '/subscribe',
+    authHeaderToken,
+    async (req: AuthenticatedRequest, res: Response) => {
+        const { subscription } = req.body;
+        const userId = req.user!.id;
 
-router.post('/subscribe', (req: Request, res: Response) => {
-    const subscription = req.body;
-    subscriptions.push(subscription);
-    res.status(201).json({});
-});
+        try {
+            // Delete any existing subscriptions
+            await Subscription.destroy({
+                where: {
+                    user_id: userId
+                }
+            })
 
-router.post('/send-notification', (req: Request, res: Response) => {
-    const { title, body, icon, badge } = req.body;
-    const payload = JSON.stringify({ title, body, icon, badge });
+            // Record the new one
+            const subscriptionRecord = await Subscription.create({
+                user_id: userId,
+                endpoint: subscription.endpoint,
+                p256dh: subscription.keys.p256dh,
+                auth: subscription.keys.auth,
+            });
 
-    Promise.all(subscriptions.map(sub =>
-        webPush.sendNotification(sub, payload)
-    ))
-        .then(() => res.status(200).json({ message: 'Notification sent' }))
-        .catch(err => {
-            console.error('Error sending notification:', err);
-            res.status(500).json({ error: 'Failed to send notification' });
-        });
-});
+            res.status(201).json({ message: 'Subscription saved.', subscriptionRecord });
+        } catch (error) {
+            console.error('Error saving subscription:', error);
+            res.status(500).json({ error: 'Failed to save subscription.' });
+        }
+    }
+);
 
 export default router
