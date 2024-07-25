@@ -41,7 +41,9 @@ router.post('/create', authHeaderToken, async (req: AuthenticatedRequest, res: R
             title,
             description,
             user_id: req.user!.id, // Associate goal with the logged-in user
-            end_date: endDate
+            completed: false,
+            end_date: endDate,
+            last_notified_at: new Date().toDateString()
         });
         res.status(201).json(goal);
     } catch (error) {
